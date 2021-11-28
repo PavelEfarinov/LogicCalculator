@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
+      <PackageReference Include="Google.Protobuf" Version="3.18.1" />
+      <PackageReference Include="Grpc.Net.Client" Version="2.40.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.41.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\LogicServer\Protos\session.proto">
+        <GrpcServices>Client</GrpcServices>
+      </Protobuf>
+      <Protobuf Include="..\LogicServer\Protos\nodes.proto">
+        <GrpcServices>Client</GrpcServices>
+      </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Logic.Dto\Logic.Dto.csproj" />
+    </ItemGroup>
+
+</Project>

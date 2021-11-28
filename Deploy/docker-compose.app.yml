@@ -1,0 +1,23 @@
+﻿version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: my_password
+      POSTGRES_USER: application_user
+      POSTGRES_DB: application_database
+    ports:
+      - "5432:5432"
+
+  app-server:
+    image: final-app-server
+    restart: always
+    depends_on:
+      - "db"
+    environment:
+      ASPNETCORE_URLS: "http://+:5000"
+      PG_CONNECTION_STRING: "Host=db;Port=5432;UID=application_user;PWD=my_password;Database=application_database"
+    ports:
+      - "5000:5000"
