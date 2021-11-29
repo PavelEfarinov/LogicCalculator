@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\Logic.Proto\Protos\session.proto">
+            <GrpcServices>None</GrpcServices>
+        </Protobuf>
+        <Protobuf Include="..\Logic.Proto\Protos\nodes.proto">
+            <GrpcServices>None</GrpcServices>
+        </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Logic.Proto\Logic.Proto.csproj" />
+    </ItemGroup>
+
+</Project>

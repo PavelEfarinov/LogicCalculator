@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "Logic.Proto";
+
+package session;
+
+// The greeting service definition.
+service SessionConnector {
+  // Sends a greeting
+  rpc InitConnection (NewConnectionRequest) returns (ConnectionReply);
+  rpc InitConnectionWithGuid (ConnectionRequest) returns (ConnectionReply);
+
+}
+
+message NewConnectionRequest {
+  string userId = 1;
+}
+
+message ConnectionRequest {
+  string userId = 1;
+}
+
+message ConnectionReply {
+  string userId = 1;
+}

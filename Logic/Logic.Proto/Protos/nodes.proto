@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option csharp_namespace = "Logic.Proto";
+
+import "google/protobuf/struct.proto";
+
+package node;
+
+service NodesConnector {
+  rpc AddNewNode (AddNodeRequest) returns (NodeConnectionReply);
+  rpc LinkNodes (LinkNodeRequest) returns (NodeConnectionReply);
+  rpc GetUserNode (GetNodeRequest) returns (GetNodeConnectionReply);
+  rpc SetNodeValue (SetNodeValueRequest) returns (NodeConnectionReply);
+}
+enum NodeType {
+  CONST = 0;
+  NOT = 1;
+  AND = 2;
+  OR = 3;
+}
+
+message AddNodeRequest {
+  string nodeName = 1;
+  NodeType nodeType = 2;
+  string sessionId = 3;
+}
+message LinkNodeRequest {
+  string sourceNodeName = 1;
+  string destinationNodeName = 2;
+  string sessionId = 3;
+}
+message GetNodeRequest {
+  string nodeName = 1;
+  string sessionId = 2;
+}
+message SetNodeValueRequest {
+  string nodeName = 1;
+  NullableBool nodeValue = 2;
+  string sessionId = 3;
+}
+
+message NullableBool {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    bool data = 2;
+  }
+}
+
+message GetNodeConnectionReply
+{
+  string nodeName = 1;
+  NodeType nodeType = 2;
+  NullableBool nodeValue = 3;
+  repeated SimpleNode SourceNodes = 4;
+  repeated SimpleNode DestinationNodes = 5;
+  NodeConnectionReply status = 6;
+}
+
+message SimpleNode
+{
+  string nodeName = 1;
+  NodeType nodeType = 2;
+  NullableBool nodeValue = 3;
+}
+
+message NodeConnectionReply {
+  bool success = 1;
+  string errorMessage = 2;
+}
