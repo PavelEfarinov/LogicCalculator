@@ -17,14 +17,16 @@ namespace Logic.Client
 		private readonly string _grpcUrl;
 		private UserSessionDto _currentSessionDto;
 		private readonly SessionServiceFacade _sessionServiceFacade;
+		private readonly NodeServiceFacade _nodeServiceFacade;
 		private readonly Parser _parser;
 
 		public ConsoleService(SessionServiceFacade sessionServiceFacade, SessionFileHelper sessionFileHelper,
-			string grpcUrl)
+			string grpcUrl, NodeServiceFacade nodeServiceFacade)
 		{
 			_sessionServiceFacade = sessionServiceFacade;
 			_sessionFileHelper = sessionFileHelper;
 			_grpcUrl = grpcUrl;
+			_nodeServiceFacade = nodeServiceFacade;
 			_parser = new Parser(with =>
 			{
 				with.CaseInsensitiveEnumValues = true;
@@ -58,20 +60,23 @@ namespace Logic.Client
 			while(shouldRun)
 			{
 				var userInput = Console.ReadLine()?.Split(' ');
-				var result = _parser.ParseArguments<AddOptions, LinkOptions, ShowOptions, SetOptions, EndOptions>(userInput);
+				var result = _parser.ParseArguments<AddOptions, LinkOptions, ShowOptions, SetOptions, EndOptions, AllOptions>(userInput);
 				result
 					.WithParsed<AddOptions>(options =>
 					{
-						Console.WriteLine(NodeHelper.AddNode(options, _currentSessionDto.SessionId));
+						Console.WriteLine(_nodeServiceFacade.AddNode(options, _currentSessionDto.SessionId));
 					}).WithParsed<LinkOptions>(options =>
 					{
-						Console.WriteLine(NodeHelper.LinkNodes(options, _currentSessionDto.SessionId));
+						Console.WriteLine(_nodeServiceFacade.LinkNodes(options, _currentSessionDto.SessionId));
 					}).WithParsed<ShowOptions>(options =>
 					{
-						Console.WriteLine(NodeHelper.GetNodeInfo(options, _currentSessionDto.SessionId));
+						Console.WriteLine(_nodeServiceFacade.GetNodeInfo(options, _currentSessionDto.SessionId));
 					}).WithParsed<SetOptions>(options =>
 					{
-						Console.WriteLine(NodeHelper.SetNodeValue(options, _currentSessionDto.SessionId));
+						Console.WriteLine(_nodeServiceFacade.SetNodeValue(options, _currentSessionDto.SessionId));
+					}).WithParsed<AllOptions>(options =>
+					{
+						Console.WriteLine(_nodeServiceFacade.GetAllNodesInfo(_currentSessionDto.SessionId));
 					}).WithParsed<EndOptions>(options =>
 					{
 						shouldRun = false;

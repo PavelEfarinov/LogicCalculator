@@ -10,6 +10,7 @@ service NodesConnector {
   rpc AddNewNode (AddNodeRequest) returns (NodeConnectionReply);
   rpc LinkNodes (LinkNodeRequest) returns (NodeConnectionReply);
   rpc GetUserNode (GetNodeRequest) returns (GetNodeConnectionReply);
+  rpc GetUserNodes (GetNodesRequest) returns (GetNodesConnectionReply);
   rpc SetNodeValue (SetNodeValueRequest) returns (NodeConnectionReply);
 }
 enum NodeType {
@@ -33,6 +34,9 @@ message GetNodeRequest {
   string nodeName = 1;
   string sessionId = 2;
 }
+message GetNodesRequest {
+  string sessionId = 1;
+}
 message SetNodeValueRequest {
   string nodeName = 1;
   NullableBool nodeValue = 2;
@@ -54,6 +58,11 @@ message GetNodeConnectionReply
   repeated SimpleNode SourceNodes = 4;
   repeated SimpleNode DestinationNodes = 5;
   NodeConnectionReply status = 6;
+}
+message GetNodesConnectionReply
+{
+  repeated SimpleNode Nodes = 1;
+  NodeConnectionReply status = 2;
 }
 
 message SimpleNode

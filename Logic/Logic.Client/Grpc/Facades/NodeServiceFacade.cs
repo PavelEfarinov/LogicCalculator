@@ -5,11 +5,11 @@ using Logic.Client.Grpc.Factories;
 using Logic.Proto;
 using Logic.Utils;
 
-namespace Logic.Client.Helpers
+namespace Logic.Client.Grpc.Facades
 {
-	public class NodeHelper
+	public class NodeServiceFacade
 	{
-		public static string AddNode(AddOptions options, Guid sessionId)
+		public string AddNode(AddOptions options, Guid sessionId)
 		{
 			var response = GrpcNodeClientFactory.GetNodesClient().AddNewNode(new AddNodeRequest()
 			{
@@ -25,7 +25,7 @@ namespace Logic.Client.Helpers
 			return "An error occured: " + response.ErrorMessage;
 		}
 
-		public static string LinkNodes(LinkOptions options, Guid sessionId)
+		public string LinkNodes(LinkOptions options, Guid sessionId)
 		{
 			var response = GrpcNodeClientFactory.GetNodesClient().LinkNodes(new LinkNodeRequest()
 			{
@@ -41,7 +41,7 @@ namespace Logic.Client.Helpers
 			return "An error occured: " + response.ErrorMessage;
 		}
 
-		public static string SetNodeValue(SetOptions options, Guid sessionId)
+		public string SetNodeValue(SetOptions options, Guid sessionId)
 		{
 			var response = GrpcNodeClientFactory.GetNodesClient().SetNodeValue(new SetNodeValueRequest()
 			{
@@ -57,7 +57,23 @@ namespace Logic.Client.Helpers
 			return "An error occured: " + response.ErrorMessage;
 		}
 
-		public static string GetNodeInfo(ShowOptions options, Guid sessionId)
+		public string GetAllNodesInfo(Guid sessionId)
+		{
+			var response = GrpcNodeClientFactory.GetNodesClient().GetUserNodes(new GetNodesRequest()
+			{
+				SessionId = sessionId.ToString(),
+			});
+			if (response.Status.Success)
+			{
+				return string.Join(", ",
+					response.Nodes.Select(node =>
+						$"{node.NodeName}:{node.NodeType.ToString()}:{node.NodeValue.ToPrintString()}"));
+			}
+
+			return "An error occured: " + response.Status.ErrorMessage;
+		}
+
+		public string GetNodeInfo(ShowOptions options, Guid sessionId)
 		{
 			var response = GrpcNodeClientFactory.GetNodesClient().GetUserNode(new GetNodeRequest()
 			{
@@ -77,7 +93,7 @@ namespace Logic.Client.Helpers
 					       ? $"{sources}\r\n" +
 					         $"{"\\/".PadLeft(sources.Length / 2)}\r\n"
 					       : "") +
-				       $"{response.NodeName.PadLeft(sources.Length / 2)}\r\n" +
+				       $"{(response.NodeName + ":" + response.NodeValue.ToPrintString()).PadLeft(sources.Length / 2)}\r\n" +
 				       (destinations.Length > 0
 					       ? $"{"\\/".PadLeft(sources.Length / 2)}\r\n" +
 					         $"{destinations}\r\n"

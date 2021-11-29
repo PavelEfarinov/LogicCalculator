@@ -150,5 +150,45 @@ namespace Logic.Server.Services.Grpc
 				);
 			}
 		}
+
+		public override Task<GetNodesConnectionReply> GetUserNodes(GetNodesRequest request, ServerCallContext context)
+		{
+			try
+			{
+				return Task.FromResult(new GetNodesConnectionReply()
+					{
+						Nodes =
+						{
+							_nodesService.GetAllUserNodes(request.SessionId)
+								.Select(node =>
+									new SimpleNode()
+									{
+										NodeName = node.NodeName,
+										NodeType = (Logic.Proto.NodeType) node.NodeType,
+										NodeValue = node.NodeValue.ToNullable()
+									})
+						},
+						Status = new NodeConnectionReply()
+						{
+							Success = true,
+							ErrorMessage = ""
+						}
+					}
+				);
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(message: e.ToString());
+				return Task.FromResult(new GetNodesConnectionReply()
+				{
+					Nodes = { },
+					Status = new NodeConnectionReply()
+					{
+						Success = false,
+						ErrorMessage = e.ToString()
+					}
+				});
+			}
+		}
 	}
 }
